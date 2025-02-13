@@ -1,4 +1,4 @@
-const socket = io('https://your-websocket-server.com:3000');
+const socket = io('https://infyapp-cardgame.netlify.app:3000');
 let playerId = null;
 let gameId = null;
 
