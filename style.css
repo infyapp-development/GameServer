@@ -1,0 +1,216 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #2C3E50, #4CA1AF);
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Header */
+.game-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+    background: #FFC107;
+    color: #333;
+    font-size: 1rem;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background: #FF9800;
+    transform: scale(1.1);
+}
+
+/* Animated Play Button */
+.animated-btn {
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+/* Input Fields */
+.input-field {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 10px 0;
+    width: 80%;
+    text-align: center;
+    display: block;
+    font-size: 1rem;
+}
+
+/* Hidden Elements */
+.hidden {
+    display: none;
+}
+
+/* Game Area */
+.game-area, .game-board {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    animation: slideIn 1s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Round Count */
+.round-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Card Section */
+.card-container {
+    margin-top: 20px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Playing Cards */
+.cardBtn {
+    width: 80px;
+    height: 120px;
+    background: white;
+    border: 3px solid black;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: black;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+.cardBtn:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 8px 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Card Number */
+.card-number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Selected Card */
+.cardBtn.selected {
+    background: gold;
+    border-color: red;
+    transform: scale(1.15);
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.8);
+}
+
+/* Scoreboard & Status */
+#status, #roundResult, #scoreBoard {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    padding: 20px;
+    animation: popupFade 0.3s ease-in-out;
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    padding: 20px;
+    color: black;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Restart Button */
+#restartGame {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+#restartGame:hover {
+    background: #218838;
+}
+
+/* Fade-in Animation */
+@keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
