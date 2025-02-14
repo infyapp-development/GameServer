@@ -57,7 +57,7 @@ socket.on('roundResult', ({ systemCard, players, result, round }) => {
     // alert(`System selected: ${systemCard}\n${result}`);
     document.getElementById('roundResult').innerText = `System selected: ${systemCard}\n${result}`;
     document.getElementById('scoreBoard').innerText = `${players[0].name}: ${players[0].score} | ${players[1].name}: ${players[1].score}`;
-    document.getElementById('roundCount').innerText = `Round: ${round}`;
+    document.getElementById('roundCount').innerText = `Round: ${round}/5`;
     document.querySelectorAll('.cardBtn').forEach(btn => btn.classList.remove('selected'));
 });
 
