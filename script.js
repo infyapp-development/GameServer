@@ -1,9 +1,10 @@
+// const socket = io('http://localhost:3000');
 const socket = io('https://gameserver-g68k.onrender.com');
 let playerId = null;
 let gameId = null;
 
 document.getElementById('playBtn').addEventListener('click', () => {
-    document.getElementById('gameArea').style.display = 'block';
+    document.getElementById('gameArea').style.display = 'flex';
 });
 
 document.getElementById('createGame').addEventListener('click', () => {
@@ -57,6 +58,7 @@ socket.on('roundResult', ({ systemCard, players, result, round }) => {
     document.getElementById('roundResult').innerText = `System selected: ${systemCard}\n${result}`;
     document.getElementById('scoreBoard').innerText = `${players[0].name}: ${players[0].score} | ${players[1].name}: ${players[1].score}`;
     document.getElementById('roundCount').innerText = `Round: ${round}`;
+    document.querySelectorAll('.cardBtn').forEach(btn => btn.classList.remove('selected'));
 });
 
 socket.on('gameOver', ({ winner }) => {

@@ -56,6 +56,7 @@ io.on('connection', (socket) => {
         game.selectedCards[socket.id] = card;
 
         if (Object.keys(game.selectedCards).length === 2) {
+            setTimeout(() => {
             if(game.rounds <= 5){
                 game.rounds++;
             }
@@ -102,6 +103,7 @@ io.on('connection', (socket) => {
                 io.to(gameId).emit('gameOver', {winner: winnerName });
                 delete games[gameId];
             }
+        }, 1000);
         }
     });
 
