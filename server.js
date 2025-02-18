@@ -14,6 +14,20 @@ const io = new Server(server, {
 });
 
 app.use(express.static(path.join(__dirname, '/')));
+
+// Initialize a deck of 52 cards
+const suits = ['Hearts', 'Kite', 'Clubs', 'Spades'];
+const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'A'];
+const deck = suits.flatMap(suit => values.map(value => ({ value, suit })));
+
+// Function to shuffle the deck
+function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+}
+
 const games = {};
 
 io.on('connection', (socket) => {
@@ -24,7 +38,8 @@ io.on('connection', (socket) => {
         games[gameId] = {
             players: [{ id: socket.id, name: playerName, score: 0 }],
             selectedCards: {},
-            rounds: 1
+            rounds: 1,
+            deck: [...deck], 
         };
         socket.join(gameId);
         socket.emit('gameCreated', gameId);
@@ -42,7 +57,23 @@ io.on('connection', (socket) => {
 
     socket.on('startGame', (gameId) => {
         if (games[gameId] && games[gameId].players.length === 2) {
-            io.to(gameId).emit('gameStarted');
+                shuffleDeck(); 
+                const playerCards = [[], []];
+
+                // Distribute 5 random cards to each player
+                for (let i = 0; i < 5; i++) {
+                    playerCards[0].push(games[gameId].deck.pop());
+                    playerCards[1].push(games[gameId].deck.pop());
+                }
+
+                games[gameId].players[0].cards = playerCards[0];
+                games[gameId].players[1].cards = playerCards[1];
+
+                io.to(gameId).emit('gameStarted', {
+                    cards: playerCards[0],
+                    systemCard: '',
+                });
+            // io.to(gameId).emit('gameStarted');
         } else {
             socket.emit('error', 'Need 2 players to start the game');
         }
@@ -60,22 +91,34 @@ io.on('connection', (socket) => {
             if(game.rounds <= 5){
                 game.rounds++;
             }
-            const systemCard = Math.floor(Math.random() * 5) + 1;
+            
             const players = game.players;
             const player1 = players[0];
             const player2 = players[1];
-
+            const combinedPlayerCards = [...player1.cards];
+            const systemCard = combinedPlayerCards[Math.floor(Math.random() * combinedPlayerCards.length)];
             let result = "Draw!";
-            if (game.selectedCards[player1.id] === systemCard && game.selectedCards[player2.id] === systemCard) {
+            if (
+                game.selectedCards[player1.id].value === systemCard.value &&
+                game.selectedCards[player1.id].suit === systemCard.suit &&
+                game.selectedCards[player2.id].value === systemCard.value &&
+                game.selectedCards[player2.id].suit === systemCard.suit
+            ) {
                 // Both players selected the same card and it matches the system card
                 player1.score += 1;
                 player2.score += 1;
                 result = `Both ${player1.name} and ${player2.name} win this round! 🎉`;
-            } else if (game.selectedCards[player1.id] === systemCard) {
+            } else if (
+                game.selectedCards[player1.id].value === systemCard.value &&
+                game.selectedCards[player1.id].suit === systemCard.suit
+            ) {
                 // Only player 1 selected the matching card
                 player1.score += 1;
                 result = `${player1.name} wins this round! 🏆`;
-            } else if (game.selectedCards[player2.id] === systemCard) {
+            } else if (
+                game.selectedCards[player2.id].value === systemCard.value &&
+                game.selectedCards[player2.id].suit === systemCard.suit
+            ) {
                 // Only player 2 selected the matching card
                 player2.score += 1;
                 result = `${player2.name} wins this round! 🏆`;
@@ -83,8 +126,9 @@ io.on('connection', (socket) => {
                 // No one matched the system card
                 result = "It's a draw!";
             }
+            
 
-            io.to(gameId).emit('roundResult', { systemCard, players, result,round: game.rounds });
+            io.to(gameId).emit('roundResult', { systemCard , players, result,round: game.rounds });
 
             game.selectedCards = {};
 

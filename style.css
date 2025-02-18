@@ -32,6 +32,12 @@ body {
 }
 
 /* Buttons */
+button{
+    padding: 0;
+background: transparent;
+border: 0;
+}
+
 .btn {
     background: #FFC107;
     color: #333;
@@ -143,7 +149,7 @@ body {
 
 /* Selected Card */
 .cardBtn.selected {
-    background: gold;
+    /* background: gold; */
     border-color: red;
     transform: scale(1.15);
     box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.8);
@@ -215,5 +221,21 @@ body {
         opacity: 1;
         transform: translate(-50%, -50%);
     }
+}
+
+#roundResult {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+#roundResult img {
+    width: 100px;  /* Adjust size to match your cards */
+    height: 140px; /* Adjust size to match your cards */
+    border: 2px solid #000;  /* Border similar to other cards */
+    border-radius: 10px;  /* Optional: rounded corners for a smoother look */
+    margin-top: 10px;
 }
 

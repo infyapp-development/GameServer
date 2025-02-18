@@ -33,6 +33,7 @@ socket.on('gameJoined', ({ players, id }) => {
     document.getElementById('gameArea').style.display = 'none';
     document.getElementById('playBtn').style.display = 'none';
     document.getElementById('status').innerText = `Players: ${players.map(p => p.name).join(', ')}`;
+    socket.emit('startGame', gameId);
     // document.getElementById('status').innerText = `Players: ${players.map(p => p.name).join(', ')}`;
 });
 
@@ -40,25 +41,61 @@ socket.on('gameJoined', ({ players, id }) => {
 //     socket.emit('startGame', gameId);
 // });
 
-socket.on('gameStarted', () => {
+socket.on('gameStarted', ({ cards, systemCard }) => {
+    renderCards(cards);
     document.getElementById('status').innerText = "Game Started! Select a card.";
 });
 
-document.querySelectorAll('.cardBtn').forEach(button => {
-    button.addEventListener('click', () => {
+// Attach the event listener to the card container
+document.querySelector('.cards').addEventListener('click', (event) => {
+    
+    // Check if the clicked element is a card button
+    if (event.target && event.target.classList.contains('cardBtn')) {
+        const button = event.target;
+        
+        // Remove 'selected' class from all buttons and add it to the clicked one
         document.querySelectorAll('.cardBtn').forEach(btn => btn.classList.remove('selected'));
         button.classList.add('selected');
+        
+        // Get the data-card attribute and emit the selected card
         const selectedCard = button.getAttribute('data-card');
-        socket.emit('selectCard', { gameId, playerId, card: parseInt(selectedCard) });
-    });
+        socket.emit('selectCard', { gameId, playerId, card: JSON.parse(selectedCard) });
+    }
 });
 
+
+function renderCards(cards) {
+    const cardContainer = document.querySelector('.cards');
+    
+    // Check if the container exists before modifying it
+    if (cardContainer) {
+        cardContainer.innerHTML = ''; // Clear existing cards
+        cards.forEach((card) => {
+            const button = document.createElement('button');
+            // button.classList.add('cardBtn');
+            // button.dataset.card = JSON.stringify(card);
+            button.innerHTML = `<img src="images/${card.value}_of_${card.suit}.svg" data-card=${JSON.stringify(card)} class="card-img cardBtn">`;
+            cardContainer.appendChild(button);
+        });
+        // document.getElementById('roundResult').innerHTML = '';
+    } else {
+        console.error('Card container not found!');
+    }
+}
+
 socket.on('roundResult', ({ systemCard, players, result, round }) => {
-    // alert(`System selected: ${systemCard}\n${result}`);
-    document.getElementById('roundResult').innerText = `System selected: ${systemCard}\n${result}`;
+    const roundResultElement = document.getElementById('roundResult');
+
+    roundResultElement.style.display = 'block';
+    document.getElementById('roundResult').innerHTML = `System selected: <img src="images/${systemCard.value}_of_${systemCard.suit}.svg" class="card-img cardBtn">`;
     document.getElementById('scoreBoard').innerText = `${players[0].name}: ${players[0].score} | ${players[1].name}: ${players[1].score}`;
     document.getElementById('roundCount').innerText = `Round: ${round}/5`;
+    document.getElementById('result').innerText = `Result: ${result}`;
     document.querySelectorAll('.cardBtn').forEach(btn => btn.classList.remove('selected'));
+    renderCards(players[0].cards);
+    setTimeout(() => {
+        roundResultElement.style.display = 'none';
+    }, 1500);
 });
 
 socket.on('gameOver', ({ winner }) => {
@@ -72,7 +109,6 @@ socket.on('gameOver', ({ winner }) => {
     let displayMessage = "";
     
     if (winner != '') {
-        const winnerName = winner.split(" ")[0]; // Extract winner's name
         if (winner == playerName) {
             displayMessage = "🎉 Congratulations! You won the game! 🏆";
         } else {
@@ -96,5 +132,6 @@ socket.on('gameOver', ({ winner }) => {
     // Close modal when clicking the 'X'
     document.querySelector(".close").addEventListener("click", () => {
         modal.style.display = "none";
+        location.reload();
     });
 });
